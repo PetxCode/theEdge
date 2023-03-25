@@ -1,0 +1,13 @@
+declare module "*cors";
+declare module "*express";
+declare module "*mongoose";
+declare module "*typeorm";
+declare module "*dotenv";
+declare module "*bcrypt";
+declare module "*jsonwebtoken";
+declare module "*cookie-session";
+declare module "*googleapis";
+declare module "*nodemailer";
+declare module "*passport";
+declare module "*ejs";
+declare module "*passport-google-oauth20";
