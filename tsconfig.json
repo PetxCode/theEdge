@@ -33,7 +33,7 @@
     "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "./scr/dist",
+    "outDir": "./src/dist",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,

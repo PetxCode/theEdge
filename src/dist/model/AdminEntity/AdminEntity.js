@@ -32,7 +32,10 @@ __decorate([
     __metadata("design:type", String)
 ], AdminEntity.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        // unique: true,
+        nullable: true,
+    }),
     __metadata("design:type", String)
 ], AdminEntity.prototype, "password", void 0);
 __decorate([
@@ -40,7 +43,10 @@ __decorate([
     __metadata("design:type", String)
 ], AdminEntity.prototype, "role", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        // unique: true,
+        nullable: true,
+    }),
     __metadata("design:type", String)
 ], AdminEntity.prototype, "schoolName", void 0);
 __decorate([

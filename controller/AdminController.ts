@@ -144,29 +144,43 @@ export const createAdmins = async (
         message: "This user does exist",
       });
     } else {
-      const slt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(password, slt);
+      if (!password) {
+        new mainAppErrorHandler({
+          message: `Please put in a password`,
+          status: HTTP.BAD_REQUEST,
+          name: "No password Error",
+          isSuccess: false,
+        });
 
-      const admin = await AdminEntity.create({
-        userName,
-        schoolName,
-        email,
-        password: hash,
-        role: mainRoles.roles.admin,
-        token: tokenData,
-        verified: false,
-      }).save();
+        return res.status(HTTP.BAD_REQUEST).json({
+          message: "PLease enter your choice password",
+          
+        });
+      } else {
+        const slt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, slt);
 
-      verifiedUserMail(admin)
-        .then((result) => {
-          console.log("message been sent to you: ");
-        })
-        .catch((error) => console.log(error));
+        const admin = await AdminEntity.create({
+          userName,
+          schoolName,
+          email,
+          password: hash,
+          role: mainRoles.roles.admin,
+          token: tokenData,
+          verified: false,
+        }).save();
 
-      return res.status(HTTP.CREATED).json({
-        message: "Please check your mail to verify your account",
-        data: admin,
-      });
+        verifiedUserMail(admin)
+          .then((result) => {
+            console.log("message been sent to you: ");
+          })
+          .catch((error) => console.log(error));
+
+        return res.status(HTTP.CREATED).json({
+          message: "Please check your mail to verify your account",
+          data: admin,
+        });
+      }
     }
   } catch (err) {
     new mainAppErrorHandler({

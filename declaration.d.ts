@@ -10,4 +10,5 @@ declare module "*googleapis";
 declare module "*nodemailer";
 declare module "*passport";
 declare module "*ejs";
+declare module "*passport-github2";
 declare module "*passport-google-oauth20";

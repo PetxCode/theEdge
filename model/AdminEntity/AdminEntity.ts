@@ -23,13 +23,19 @@ export class AdminEntity extends BaseEntity {
   })
   email: string;
 
-  @Column()
+  @Column({
+    // unique: true,
+    nullable: true,
+  })
   password: string;
 
   @Column()
   role: string;
 
-  @Column()
+  @Column({
+    // unique: true,
+    nullable: true,
+  })
   schoolName: string;
 
   @Column()

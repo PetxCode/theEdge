@@ -21,7 +21,7 @@ export const mainApp = (app: Application) => {
       }),
     )
 
-    .use(function (req: any, res: any, next: any) {
+    .use(function (req: any, res: Response, next: NextFunction) {
       if (req.session && !req.session.regenerate) {
         req.session.regenerate = (cb: any) => {
           cb();
@@ -37,7 +37,10 @@ export const mainApp = (app: Application) => {
     .use(passport.initialize())
     .use(passport.session())
 
+    // custom auth
     .use("/api/admin", admin)
+
+    //oAuth with google
     .use("/", social)
 
     .all("*", (req: Request, res: Response, next: NextFunction) => {

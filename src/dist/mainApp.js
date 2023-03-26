@@ -37,7 +37,9 @@ const mainApp = (app) => {
     })
         .use(passport_1.default.initialize())
         .use(passport_1.default.session())
+        // custom auth
         .use("/api/admin", AdminRoutes_1.default)
+        //oAuth with google
         .use("/", oAuthRoute_1.default)
         .all("*", (req, res, next) => {
         next(new errorDefiner_1.mainAppErrorHandler({

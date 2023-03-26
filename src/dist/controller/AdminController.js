@@ -136,26 +136,39 @@ const createAdmins = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         }
         else {
-            const slt = yield bcrypt_1.default.genSalt(10);
-            const hash = yield bcrypt_1.default.hash(password, slt);
-            const admin = yield AdminEntity_1.AdminEntity.create({
-                userName,
-                schoolName,
-                email,
-                password: hash,
-                role: roles_1.mainRoles.roles.admin,
-                token: tokenData,
-                verified: false,
-            }).save();
-            (0, email_1.verifiedUserMail)(admin)
-                .then((result) => {
-                console.log("message been sent to you: ");
-            })
-                .catch((error) => console.log(error));
-            return res.status(HTTP_1.HTTP.CREATED).json({
-                message: "Please check your mail to verify your account",
-                data: admin,
-            });
+            if (!password) {
+                new errorDefiner_1.mainAppErrorHandler({
+                    message: `Please put in a password`,
+                    status: HTTP_1.HTTP.BAD_REQUEST,
+                    name: "No password Error",
+                    isSuccess: false,
+                });
+                return res.status(HTTP_1.HTTP.BAD_REQUEST).json({
+                    message: "PLease enter your choice password",
+                });
+            }
+            else {
+                const slt = yield bcrypt_1.default.genSalt(10);
+                const hash = yield bcrypt_1.default.hash(password, slt);
+                const admin = yield AdminEntity_1.AdminEntity.create({
+                    userName,
+                    schoolName,
+                    email,
+                    password: hash,
+                    role: roles_1.mainRoles.roles.admin,
+                    token: tokenData,
+                    verified: false,
+                }).save();
+                (0, email_1.verifiedUserMail)(admin)
+                    .then((result) => {
+                    console.log("message been sent to you: ");
+                })
+                    .catch((error) => console.log(error));
+                return res.status(HTTP_1.HTTP.CREATED).json({
+                    message: "Please check your mail to verify your account",
+                    data: admin,
+                });
+            }
         }
     }
     catch (err) {

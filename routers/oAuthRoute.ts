@@ -1,54 +1,44 @@
 import passport from "passport";
 import express, { Request, Response } from "express";
+import "../controller/googleOAuth";
+import { HTTP } from "../utils/constants/HTTP";
 
+import jwt from "jsonwebtoken";
+import { iUser } from "../utils/interfaces/userInterface";
 const router = express.Router();
 
-router.get("/now-in", (req: Request, res: Response) => {
-  return res.status(200).json({
-    message: "user found",
-    // data: {
-    //   ...info,
-    // },
+router.route("/success").get((req: Request, res: Response) => {
+  const userData: iUser = req.user;
+  const encrypt = jwt.sign(
+    {
+      id: userData?.id,
+      email: userData?.email,
+      role: userData?.role,
+      schoolName: userData?.schoolName,
+      userName: userData?.userName,
+    },
+    process.env.SIG_SECRET,
+    { expiresIn: process.env.SIG_EXPIRES },
+  );
+
+  return res.status(HTTP.OK).json({
+    message: `Welcome back ${userData.userName} `,
+    data: { userData, encrypt },
   });
 });
 
-router.get("/success", (req, res) => {
-  return res.status(200).json({
-    message: "This is Login Page page",
-  });
-});
-
-router.get("/failure", (req, res) => {
+router.route("/failure").get((req, res) => {
   return res.status(200).json({
     message: "This is bad page",
   });
 });
 
-router.get(
-  "/google",
-  (req: Request, res: Response) => {
-    return res.status(200).json({
-      message: "user google",
-    });
-  },
+router
+  .route("/api/with-google/google-auth")
+  .get(passport.authenticate("google", { scope: ["profile", "email"] }));
 
-  passport.authenticate("google", { scope: ["profile", "email"] }),
-);
-router.get(
-  "/auth/google/callback",
+router.route("/auth/google/callback").get(
   passport.authenticate("google", {
-    successRedirect: "/success",
-    failureRedirect: "/failure",
-  }),
-);
-
-router.get(
-  "/gitbub/auth",
-  passport.authenticate("github", { scope: ["profile", "user:email"] }),
-);
-router.get(
-  "/auth/github/callback",
-  passport.authenticate("github", {
     successRedirect: "/success",
     failureRedirect: "/failure",
   }),
