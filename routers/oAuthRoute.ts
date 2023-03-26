@@ -1,6 +1,7 @@
 import passport from "passport";
 import express, { Request, Response } from "express";
 import "../controller/googleOAuth";
+import "../controller/microsoftOAuth";
 import { HTTP } from "../utils/constants/HTTP";
 
 import jwt from "jsonwebtoken";
@@ -43,5 +44,24 @@ router.route("/auth/google/callback").get(
     failureRedirect: "/failure",
   }),
 );
+
+router.route("/auth/microsoft").get(
+  passport.authenticate("microsoft", {
+    // Optionally define any authentication parameters here
+    // For example, the ones in https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow
+
+    prompt: "select_account",
+  }),
+);
+
+router
+  .route("/auth/microsoft/callback")
+  .get(
+    passport.authenticate("microsoft", { failureRedirect: "/login" }),
+    function (req, res) {
+      // Successful authentication, redirect home.
+      res.redirect("/");
+    },
+  );
 
 export default router;
