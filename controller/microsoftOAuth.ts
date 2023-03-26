@@ -53,10 +53,10 @@ passport.use(
   new MicrosoftStrategy(
     {
       // Standard OAuth2 options
-      clientID: process.env.APPLICATION_ID,
-      clientSecret: process.env.SECRET_ID,
+      clientID: process.env.APPLICATION_ID2,
+      clientSecret: process.env.SECRET_ID2,
       callbackURL: "/auth/microsoft/callback",
-      scope: ["user.read"],
+      scope: ["openid", "profile", "email"],
 
       // Microsoft specific options
 
@@ -65,13 +65,21 @@ passport.use(
       tenant: "common",
 
       // [Optional] The authorization URL. Defaults to `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize`
+
       authorizationURL:
+        //   `https://login.microsoftonline.com/${process.env.TENANT_ID2}/oauth2/v2.0/authorize`,
+
         "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
 
       // [Optional] The token URL. Defaults to `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`
-      tokenURL: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+
+      tokenURL:
+        // `https://login.microsoftonline.com/${process.env.TENANT_ID2}/oauth2/v2.0/token`,
+        "https://login.microsoftonline.com/common/oauth2/v2.0/token",
     },
-    function (accessToken, refreshToken, profile, done) {},
+    function (accessToken, refreshToken, profile, done) {
+      console.log(profile);
+    },
   ),
 );
 

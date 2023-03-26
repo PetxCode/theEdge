@@ -8,6 +8,10 @@ import jwt from "jsonwebtoken";
 import { iUser } from "../utils/interfaces/userInterface";
 const router = express.Router();
 
+router.route("/ms").get((req, res) => {
+  res.status(200).json({ message: "enter" });
+});
+
 router.route("/success").get((req: Request, res: Response) => {
   const userData: iUser = req.user;
   const encrypt = jwt.sign(
@@ -47,21 +51,18 @@ router.route("/auth/google/callback").get(
 
 router.route("/auth/microsoft").get(
   passport.authenticate("microsoft", {
-    // Optionally define any authentication parameters here
-    // For example, the ones in https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow
-
     prompt: "select_account",
   }),
 );
 
-router
-  .route("/auth/microsoft/callback")
-  .get(
-    passport.authenticate("microsoft", { failureRedirect: "/login" }),
-    function (req, res) {
-      // Successful authentication, redirect home.
-      res.redirect("/");
-    },
-  );
+router.route("/auth/microsoft/callback").get(
+  passport.authenticate("microsoft", {
+    failureRedirect: "/login",
+  }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    res.redirect("/success");
+  },
+);
 
 export default router;
