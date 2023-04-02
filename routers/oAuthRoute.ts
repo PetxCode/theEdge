@@ -33,7 +33,7 @@ router.route("/success").get((req: Request, res: Response) => {
 });
 
 router.route("/failure").get((req, res) => {
-  return res.status(200).json({
+  return res.status(HTTP.NOT_FOUND).json({
     message: "This is bad page",
   });
 });
@@ -61,7 +61,7 @@ router.route("/auth/microsoft/callback").get(
   }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect("/success");
+    res.redirect("/ms");
   },
 );
 
