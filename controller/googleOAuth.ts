@@ -1,9 +1,9 @@
 import myStrategy from "passport-google-oauth20";
 import passport from "passport";
-import { AdminEntity } from "../model/AdminEntity/AdminEntity";
+import { UserEntity } from "../model/AdminEntity/UserEntity";
 import { mainRoles } from "../utils/constants/roles";
-import dot from "dotenv"
-dot.config()
+import dot from "dotenv";
+dot.config();
 
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const Github = require("passport-github2").Strategy;
@@ -27,24 +27,21 @@ passport.use(
       profile: any,
       callback: any,
     ) => {
-      const checkUser = await AdminEntity.findOne({
+      const checkUser = await UserEntity.findOne({
         where: { email: profile._json.email },
       });
 
       if (checkUser) {
-                 return callback(null,  checkUser);
+        return callback(null, checkUser);
       } else {
-       const userCreated =  await AdminEntity.create({
-          
+        const userCreated = await UserEntity.create({
           email: profile._json.email,
           userName: profile.name.familyName,
-          role: mainRoles.roles.admin,
           token: "",
           verified: profile._json.email_verified,
         }).save();
 
-        return callback(null, userCreated)
-      
+        return callback(null, userCreated);
       }
     },
   ),

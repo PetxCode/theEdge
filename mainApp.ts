@@ -3,7 +3,7 @@ import cors from "cors";
 import { mainAppErrorHandler } from "./utils/error/errorDefiner";
 import { errorHandler } from "./utils/error/errorHandlers";
 import { HTTP } from "./utils/constants/HTTP";
-import admin from "./routers/AdminRoutes";
+import user from "./routers/UserRoutes";
 import cookieSession from "cookie-session";
 import passport from "passport";
 import social from "./routers/oAuthRoute";
@@ -38,7 +38,7 @@ export const mainApp = (app: Application) => {
     .use(passport.session())
 
     // custom auth
-    .use("/api/admin", admin)
+    .use("/api/user", user)
 
     //oAuth with google
     .use("/", social)

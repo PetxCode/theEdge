@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AdminEntity } from "../model/AdminEntity/AdminEntity";
+import { UserEntity } from "../model/AdminEntity/UserEntity";
 import { HTTP } from "../utils/constants/HTTP";
 import { mainAppErrorHandler } from "../utils/error/errorDefiner";
 import jwt from "jsonwebtoken";
@@ -8,12 +8,12 @@ import { mainRoles } from "../utils/constants/roles";
 import crypto from "crypto";
 import { resetUserPassword, verifiedUserMail } from "../utils/email";
 
-export const getAdmins = async (
+export const getUser = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
   try {
-    const schools = await AdminEntity.find();
+    const schools = await UserEntity.find();
     return res.status(HTTP.OK).json({
       message: "Viewing all schools",
       data: schools,
@@ -33,14 +33,14 @@ export const getAdmins = async (
   }
 };
 
-export const getOneAdmins = async (
+export const getOneUser = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
   try {
     const { id } = req.params;
 
-    const school = await AdminEntity.findOne({
+    const school = await UserEntity.findOne({
       where: {
         id,
       },
@@ -64,14 +64,14 @@ export const getOneAdmins = async (
   }
 };
 
-export const deleteAdmins = async (
+export const deleteUser = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
   try {
     const { id } = req.params;
 
-    const removedSchool = await AdminEntity.delete({ id });
+    const removedSchool = await UserEntity.delete({ id });
 
     return res.status(HTTP.OK).json({
       message: "school has been delete",
@@ -92,7 +92,7 @@ export const deleteAdmins = async (
   }
 };
 
-export const updateAdmins = async (
+export const updateUser = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
@@ -100,13 +100,13 @@ export const updateAdmins = async (
     const { id } = req.params;
     const { userName } = req.body;
 
-    const school = await AdminEntity.findOne({
+    const school = await UserEntity.findOne({
       where: {
         id,
       },
     });
 
-    const updateSchoolInfo = await AdminEntity.merge(school, { userName });
+    const updateSchoolInfo = await UserEntity.merge(school, { userName });
 
     return res.status(HTTP.OK).json({
       message: "Updating school's info",
@@ -127,7 +127,7 @@ export const updateAdmins = async (
   }
 };
 
-export const createAdmins = async (
+export const createUser = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
@@ -135,7 +135,7 @@ export const createAdmins = async (
     const { schoolName, userName, email, password } = req.body;
     const tokenData = crypto.randomBytes(16).toString("hex");
     console.log(tokenData);
-    const checkIfExist = await AdminEntity.findOne({
+    const checkIfExist = await UserEntity.findOne({
       where: { email },
     });
 
@@ -154,18 +154,15 @@ export const createAdmins = async (
 
         return res.status(HTTP.BAD_REQUEST).json({
           message: "PLease enter your choice password",
-          
         });
       } else {
         const slt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, slt);
 
-        const admin = await AdminEntity.create({
+        const admin = await UserEntity.create({
           userName,
-          schoolName,
           email,
           password: hash,
-          role: mainRoles.roles.admin,
           token: tokenData,
           verified: false,
         }).save();
@@ -192,19 +189,19 @@ export const createAdmins = async (
 
     return res.status(HTTP.BAD_REQUEST).json({
       message: "Error Found",
-      data: err,
+      data: err.message,
     });
   }
 };
 
-export const verifyAdmins = async (
+export const verifyUser = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
   try {
     const { id, token } = req.params;
 
-    const findAdmin = await AdminEntity.findOne({
+    const findAdmin = await UserEntity.findOne({
       where: { id },
     });
 
@@ -214,7 +211,7 @@ export const verifyAdmins = async (
       });
     } else {
       if (findAdmin.token !== "" && findAdmin.token === token) {
-        const admin = await AdminEntity.merge(findAdmin, {
+        const admin = await UserEntity.merge(findAdmin, {
           token: "",
           verified: true,
         }).save();
@@ -248,7 +245,7 @@ export const resetMail = async (
     const { id, token } = req.params;
     const { email } = req.body;
 
-    const findAdmin = await AdminEntity.findOne({
+    const findAdmin = await UserEntity.findOne({
       where: { email },
     });
 
@@ -259,7 +256,7 @@ export const resetMail = async (
     } else {
       if (findAdmin.token === "" && findAdmin.verified === true) {
         const newToken = crypto.randomBytes(32).toString("hex");
-        const admin = await AdminEntity.merge(findAdmin, {
+        const admin = await UserEntity.merge(findAdmin, {
           token: newToken,
         }).save();
 
@@ -298,7 +295,7 @@ export const changePassword = async (
     const { id, token } = req.params;
     const { password } = req.body;
 
-    const findAdmin = await AdminEntity.findOne({
+    const findAdmin = await UserEntity.findOne({
       where: { id },
     });
 
@@ -311,7 +308,7 @@ export const changePassword = async (
         const slt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, slt);
 
-        const admin = await AdminEntity.merge(findAdmin, {
+        const admin = await UserEntity.merge(findAdmin, {
           password: hashed,
           token: "",
         }).save();
@@ -344,7 +341,7 @@ export const signin = async (
   try {
     const { email, password } = req.body;
 
-    const findAdmin = await AdminEntity.findOne({
+    const findAdmin = await UserEntity.findOne({
       where: { email },
     });
 
@@ -366,8 +363,6 @@ export const signin = async (
             {
               id: findAdmin.id,
               email: findAdmin.email,
-              role: findAdmin.role,
-              schoolName: findAdmin.schoolName,
               userName: findAdmin.userName,
             },
             process.env.SIG_SECRET,
@@ -404,7 +399,7 @@ export const signin = async (
   }
 };
 
-// export const getAdmins = async (req: Request, res: Response): Promise<Response> => {
+// export const getUser = async (req: Request, res: Response): Promise<Response> => {
 //     try {
 
 //     } catch (err) {

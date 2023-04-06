@@ -21,9 +21,5 @@ export const validator = {
         return true;
       }
     }),
-
-    body("userName").trim().withMessage("Please enter your choice User Name"),
-
-    body("schoolName").trim().withMessage("Please enter your school's Name"),
   ],
 };

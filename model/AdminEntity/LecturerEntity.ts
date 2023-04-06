@@ -6,13 +6,10 @@ import {
   ManyToOne,
 } from "typeorm";
 import "reflect-metadata";
-import { AdminEntity } from "./AdminEntity";
 
 @Entity("LecturerEntities")
 export class LecturerEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({
-    // type: "uuid",
-  })
+  @PrimaryGeneratedColumn("uuid")
   id: string | number;
 
   @Column()
@@ -29,7 +26,4 @@ export class LecturerEntity extends BaseEntity {
 
   @Column()
   schoolName: string;
-
-  @ManyToOne(() => AdminEntity, (admin) => admin.lecturers)
-  admin = AdminEntity;
 }

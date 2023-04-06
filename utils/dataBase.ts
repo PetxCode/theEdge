@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { AdminEntity } from "../model/AdminEntity/AdminEntity";
+import { UserEntity } from "../model/AdminEntity/UserEntity";
 import "reflect-metadata";
-import { LecturerEntity } from "../model/AdminEntity/LecturerEntity";
+import { RoleEntity } from "../model/AdminEntity/RoleEntity";
 dotenv.config();
 
 export const AppDataSource = new DataSource({
@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DATABASE,
   synchronize: true,
   logging: false,
-  entities: [AdminEntity, LecturerEntity],
+  entities: [UserEntity, RoleEntity],
 });
 
 
